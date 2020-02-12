@@ -15,15 +15,31 @@ function fetchData(url) {
              .catch(error => console.log('Looks like there was a problem!', error))
 }
 
-/*Functions*/
+/*Check Fetch request status. If the request is successful, the Promise is resolved and returned to the fetchData function
+to parse into a JS object. If the request fails for whatever reason, the Promise is rejected and a new Error object thrown
+back to the fetchData function to be used by Catch*/
+
+function checkStatus(response) {
+    if (response.ok) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(new Error(response.statusText));
+    }
+  }
+
+/*FUNCTIONS*/
+
+/*Function to fetch API data and then pass it onto the userCards function*/
 
 fetchData(userAPI) 
     //.then (data => console.log(data))
-    .then (data => userCards(data)) //Generate user cards
+    .then (data => userCards(data))
+
+/*Function to generate user cards*/
 
 function userCards (data) {
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < data.results.length; i++) {
 
         const user = document.createElement("div");
 
@@ -49,24 +65,47 @@ function userCards (data) {
 
         gallery.appendChild(user);
     }
-
-
 } 
 
+/*Function to iterate over users with search term*/
 
-/*Check Fetch request status. If the request is successful, the Promise is resolved and returned to the fetchData function
-to parse into a JS object. If the request fails for whatever reason, the Promise is rejected and a new Error object thrown
-back to the fetchData function to be used by Catch*/
+function cardSearch (searchString) {
 
-function checkStatus(response) {
-    if (response.ok) {
-      return Promise.resolve(response);
-    } else {
-      return Promise.reject(new Error(response.statusText));
-    }
-  }
+    const users = document.getElementsByClassName("card");
+    const names = document.getElementsByClassName("card-name cap");
+    const userArray = Array.from(users);
+    const namesArray = Array.from(names);
+    const search = searchString.toLowerCase();   
+      
+    for (let i = 0; i < 12; i++) {
 
-/*Generate dynamic HTML*/
+        let searchName = namesArray[i].innerHTML.toLowerCase();
+        
+        if (!(searchName.includes(search))) {userArray[i].style.display = "none"}
+        
+    }  
+
+    document.getElementById("search-submit").setAttribute("value","Reset")
+   
+}
+
+/*Function to reset page after search */
+
+function resetPage () {
+
+    const users = document.getElementsByClassName("card");
+    const userArray = Array.from(users);
+
+    userArray.forEach(user => user.style.display = "")
+
+    document.getElementById("search-submit").setAttribute("value","🔍")
+    document.getElementById("search-input").value = "";
+}
+
+
+/*GENERATE DYNAMIC HTML*/
+
+/*HTML Search Bar*/
 
 const searchBar = document.createElement("div");
 
@@ -77,6 +116,7 @@ searchBar.innerHTML = `<form action="#" method="get">
                        </form>`;
 header.appendChild(searchBar);
 
+/*HTML Gallery Div*/
 
 const gallery = document.createElement("div");
 
@@ -84,3 +124,20 @@ gallery.classList.add("gallery")
 gallery.setAttribute("id", "gallery");
 mainHeader[0].parentNode.insertBefore(gallery, jsScript[0]);
 
+/*EVENT LISTENERS*/
+
+const searchButton = document.getElementById("search-submit");
+
+
+searchButton.addEventListener("click", event => {
+
+    const searchInput = document.getElementById("search-input").value;
+    let icon = document.getElementById("search-submit").getAttribute("value"); 
+
+    if (icon != "Reset")
+    {cardSearch(searchInput);}
+
+    else 
+    {resetPage();}
+
+});
