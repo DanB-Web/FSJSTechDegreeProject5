@@ -130,8 +130,6 @@ mainHeader[0].parentNode.insertBefore(gallery, jsScript[0]);
 
 function createModal (i, data) {
 
-console.log(data);
-
 const modal = document.createElement("div")
 modal.classList.add("modal-container");
 
@@ -145,7 +143,7 @@ modal.innerHTML = `<div class="modal">
                    <img class="modal-img" src="${data.results[i].picture.large}" alt="profile picture">
                    <h3 id="name" class="modal-name cap">${data.results[i].name.first} ${data.results[i].name.last}</h3>
                    <p class="modal-text">${data.results[i].email}</p>
-                   <p class="modal-text cap">${data.results[i].location.city}</p>
+                   <p class="modal-text cap">${data.results[i].location.city}, ${data.results[i].location.state}</p>
                    <hr>
                    <p class="modal-text">${data.results[i].cell}</p>
                    <p class="modal-text">${data.results[i].location.street.number} ${data.results[i].location.street.name}, ${data.results[i].location.city}, ${data.results[i].location.postcode}</p>
@@ -160,7 +158,7 @@ modal.innerHTML = `<div class="modal">
                     </div>`;
 
 body[0].appendChild(modal);
-
+closeButton();
 }
 
 /*EVENT LISTENERS*/
@@ -191,5 +189,17 @@ function addListener (data) {
 
         createModal(i, data);})
     }
+}
+
+function closeButton () {
+    
+    const closeButton = document.getElementById("modal-close-btn");
+
+    closeButton.addEventListener("click", event => {
+
+        const modal = document.getElementsByClassName("modal-container");
+        modal[0].remove();
+             
+        ;})
 }
 
