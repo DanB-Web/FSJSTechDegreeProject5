@@ -7,6 +7,9 @@ const jsScript = document.getElementsByTagName("script");
 
 const users = document.getElementsByClassName("card");
 
+let currentUser = null; //Variable to store current selected profile
+let API = null; //Variable to store returned API data
+
 /*API Fetch Request - the returned request is passed to checkStatus to confirm the Promise status. If successful, the returned JSON is parsed
 in a JS object. If not successful, an error is thrown back and handled by the catch method*/
 
@@ -35,22 +38,16 @@ function checkStatus(response) {
 
 fetchData(userAPI) 
     .then (data => userCards(data))
+    .then (data => APIData(data))
     .then (data => addListener(data))
 
-/*Function to generate user cards - could refactor and place const inside template literals*/
+/*Function to generate user cards*/
 
 function userCards (data) {
 
     for (let i = 0; i < data.results.length; i++) {
 
         const user = document.createElement("div");
-
-        //const image = data.results[i].picture.large;
-        //const firstName = data.results[i].name.first;
-        //const lastName = data.results[i].name.last;
-        //const email = data.results[i].email;
-        //const city = data.results[i].location.city;
-        //const state = data.results[i].location.state;
 
         user.classList.add("card")
     
@@ -69,15 +66,24 @@ function userCards (data) {
     return data; 
 } 
 
+/*Function to store API data*/
+
+function APIData (data) {
+
+    API = data;
+
+    return data;
+
+}
+
 /*Function to iterate over users with search term*/
 
 function cardSearch (searchString) {
 
-    //const users = document.getElementsByClassName("card");
     const names = document.getElementsByClassName("card-name cap");
     const userArray = Array.from(users);
     const namesArray = Array.from(names);
-    const search = searchString.toLowerCase();   
+    const search = searchString.toLowerCase();   //Make search case insensitive
       
     for (let i = 0; i < 12; i++) {
 
@@ -95,7 +101,6 @@ function cardSearch (searchString) {
 
 function resetPage () {
 
-    //const users = document.getElementsByClassName("card");
     const userArray = Array.from(users);
 
     userArray.forEach(user => user.style.display = "")
@@ -130,6 +135,8 @@ mainHeader[0].parentNode.insertBefore(gallery, jsScript[0]);
 
 function createModal (i, data) {
 
+currentUser = i; 
+
 const modal = document.createElement("div")
 modal.classList.add("modal-container");
 
@@ -158,7 +165,11 @@ modal.innerHTML = `<div class="modal">
                     </div>`;
 
 body[0].appendChild(modal);
+
 closeButton();
+nextButton();
+prevButton();
+
 }
 
 /*EVENT LISTENERS*/
@@ -178,8 +189,9 @@ searchButton.addEventListener("click", event => {
 
 });
 
+/*EVENT LISTENERS INSIDE FUNCTIONS - These listeners are dynamically added to the generated HTML as required*/
 
-function addListener (data) {
+function addListener () {
 
     const userDivs = document.getElementsByClassName("card");    
     
@@ -187,7 +199,7 @@ function addListener (data) {
         
         userDivs[i].addEventListener ("click", event => {
 
-        createModal(i, data);})
+        createModal(i, API);})
     }
 }
 
@@ -203,3 +215,33 @@ function closeButton () {
         ;})
 }
 
+function nextButton () {
+
+    const nextButton = document.getElementById("modal-next");
+
+    nextButton.addEventListener("click", event => {
+
+        if (currentUser < 11) {
+        const modal = document.getElementsByClassName("modal-container");
+        modal[0].remove();
+        currentUser += 1;
+        createModal(currentUser, API);}
+             
+        ;})
+}
+
+function prevButton () {
+
+    const prevButton = document.getElementById("modal-prev");
+
+    prevButton.addEventListener("click", event => {
+
+        if (currentUser > 0) {
+        const modal = document.getElementsByClassName("modal-container");
+        modal[0].remove();
+        currentUser -= 1;
+        createModal(currentUser, API);}
+             
+        ;})
+    
+}
