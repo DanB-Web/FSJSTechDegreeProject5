@@ -7,10 +7,12 @@ const jsScript = document.getElementsByTagName("script");
 
 const users = document.getElementsByClassName("card");
 
-let currentUser = null; //Variable to store current selected profile
-let API = null; //Variable to store returned API data
+let currentUser = null;     //Variable to store current selected profile
+let API = null;             //Variable to store returned API data
 
-/*API Fetch Request - the returned request is passed to checkStatus to confirm the Promise status. If successful, the returned JSON is parsed
+/*API FETCH REQUESTS AND ERROR HANDLING*/
+
+/*Fetch Request - the returned request is passed to checkStatus to confirm the Promise status. If successful, the returned JSON is parsed
 in a JS object. If not successful, an error is thrown back and handled by the catch method*/
 
 function fetchData(url) {
@@ -20,7 +22,7 @@ function fetchData(url) {
              .catch(error => console.log('Looks like there was a problem!', error))
 }
 
-/*Check Fetch request status. If the request is successful, the Promise is resolved and returned to the fetchData function
+/*Error Check - if the request is successful, the Promise is resolved and returned to the fetchData function
 to parse into a JS object. If the request fails for whatever reason, the Promise is rejected and a new Error object thrown
 back to the fetchData function to be used by Catch*/
 
@@ -32,16 +34,17 @@ function checkStatus(response) {
     }
   }
 
-/*FUNCTIONS*/
-
-/*Function to fetch API data and then pass it onto the userCards function*/
+/*Fetch Call - function to fetch API data and then pass it onto the userCards function, the APIData function to store it, and the addListener 
+function to put event listeners on all the employee cards*/
 
 fetchData(userAPI) 
     .then (data => userCards(data))
     .then (data => APIData(data))
     .then (data => addListener(data))
 
-/*Function to generate user cards*/
+/*MAIN FUNCTIONS*/
+
+/*Function to generate employee cards*/
 
 function userCards (data) {
 
@@ -50,6 +53,7 @@ function userCards (data) {
         const user = document.createElement("div");
 
         user.classList.add("card")
+        user.classList.add("fade-in") //CSS class for fading effect
     
         user.innerHTML = `<div class="card-img-container">
                           <img class="card-img" src="${data.results[i].picture.large}" alt="profile picture">
@@ -66,7 +70,7 @@ function userCards (data) {
     return data; 
 } 
 
-/*Function to store API data*/
+/*Function to store API data in a variable to access by other funtions later on*/
 
 function APIData (data) {
 
@@ -85,7 +89,7 @@ function cardSearch (searchString) {
     const namesArray = Array.from(names);
     const search = searchString.toLowerCase();   //Make search case insensitive
       
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < API.results.length; i++) {
 
         let searchName = namesArray[i].innerHTML.toLowerCase();
         
@@ -97,7 +101,7 @@ function cardSearch (searchString) {
    
 }
 
-/*Function to reset page after search */
+/*Function to reset page after search*/
 
 function resetPage () {
 
@@ -131,7 +135,7 @@ gallery.classList.add("gallery")
 gallery.setAttribute("id", "gallery");
 mainHeader[0].parentNode.insertBefore(gallery, jsScript[0]);
 
-/*HTML Modal Pop Up*/
+/*HTML Modal Pop Up Div*/
 
 function createModal (i, data) {
 
@@ -174,6 +178,8 @@ prevButton();
 
 /*EVENT LISTENERS*/
 
+/*Search bar event listener*/
+
 const searchButton = document.getElementById("search-submit");
 
 searchButton.addEventListener("click", event => {
@@ -191,6 +197,8 @@ searchButton.addEventListener("click", event => {
 
 /*EVENT LISTENERS INSIDE FUNCTIONS - These listeners are dynamically added to the generated HTML as required*/
 
+/*Employee card event listeners*/
+
 function addListener () {
 
     const userDivs = document.getElementsByClassName("card");    
@@ -202,6 +210,8 @@ function addListener () {
         createModal(i, API);})
     }
 }
+
+/*Modal window close button event listener*/
 
 function closeButton () {
     
@@ -215,13 +225,15 @@ function closeButton () {
         ;})
 }
 
+/*Modal window scroll button event listeners*/
+
 function nextButton () {
 
     const nextButton = document.getElementById("modal-next");
 
     nextButton.addEventListener("click", event => {
 
-        if (currentUser < 11) {
+        if (currentUser < (API.results.length - 1)) {
         const modal = document.getElementsByClassName("modal-container");
         modal[0].remove();
         currentUser += 1;

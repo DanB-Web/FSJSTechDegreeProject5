@@ -119,7 +119,7 @@ header h1 {
     text-transform: capitalize;
 }
 
-
+ 
 /* ===================================== 
    Modal
 ======================================== */
@@ -156,12 +156,22 @@ header h1 {
     outline: none;
     border-radius: 0.25em;
     border: 1px solid rgba(50, 50, 50, 0.3);
+    transition: .4s ease-out;
+}
+
+.modal-close-btn:hover {
+    transform: scale(1.3);
 }
 
 .modal-img {
     width: 150px;
     margin-top: 35px;
     border-radius: 50%;
+    transition: .4s ease-out;
+}
+
+.modal-img:hover {
+    transform: scale(1.2);
 }
 
 .modal-name {
@@ -250,6 +260,8 @@ header h1 {
     .card:hover {
         background: rgba(255, 255, 255, 1);
         border: 1px solid rgba(50, 50, 50, 0.9);
+        box-shadow: 10px 10px grey;
+        transform: scale(1.1); 
     }
 
     .card:hover .card-text {
@@ -258,6 +270,62 @@ header h1 {
 
     .btn:hover {
         background: rgba(255, 255, 255, 1);
-        color: rgba(25, 25, 25, 1); 
+        color: rgba(25, 25, 25, 1);
     }
+}
+
+/* ===================================== 
+   Fade In from https://medium.com/cloud-native-the-gathering/how-to-use-css-to-fade-in-and-fade-out-html-text-and-pictures-f45c11364f08
+======================================== */
+
+.fade-in {
+    animation: fadeIn ease 4s;
+    -webkit-animation: fadeIn ease 4s;
+    -moz-animation: fadeIn ease 4s;
+    -o-animation: fadeIn ease 4s;
+    -ms-animation: fadeIn ease 4s;
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+  }
+  
+  @-moz-keyframes fadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+  }
+  
+  @-webkit-keyframes fadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+  }
+  
+  @-o-keyframes fadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+  }
+  
+  @-ms-keyframes fadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+  }
 }
