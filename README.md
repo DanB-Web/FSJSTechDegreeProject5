@@ -37,3 +37,4 @@ ii) 	No errors at beginning or end of user scroll
 i) 	Profile fade in on page load - code credited in CSS file
 ii) 	User boxes scale out and shadow when selected
 iii) 	In modal window, close button and employee picture scale out
+iv)	Removed cross from search input file - not neccessary with live search - code credited in CSS file

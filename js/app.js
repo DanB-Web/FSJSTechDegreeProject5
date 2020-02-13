@@ -75,9 +75,7 @@ function userCards (data) {
 function APIData (data) {
 
     API = data;
-
     return data;
-
 }
 
 /*Function to iterate over users with search term*/
@@ -88,17 +86,29 @@ function cardSearch (searchString) {
     const userArray = Array.from(users);
     const namesArray = Array.from(names);
     const search = searchString.toLowerCase();   //Make search case insensitive
+   
       
     for (let i = 0; i < API.results.length; i++) {
 
         let searchName = namesArray[i].innerHTML.toLowerCase();
+      
+        let fullName = searchName.split(" ");
+        let firstName = fullName[0];
+        let lastName = fullName[1];
         
-        if (!(searchName.includes(search))) {userArray[i].style.display = "none"}
-        
+        if (!(firstName.startsWith(search)||lastName.startsWith(search))) {
+            userArray[i].style.display = "none"; 
+            userArray[i].classList.add("hide");
+            userArray[i].classList.remove("show");}     
+
+        if (firstName.startsWith(search)||lastName.startsWith(search)) {
+            userArray[i].style.display = "";
+            userArray[i].classList.add("show");
+            userArray[i].classList.remove("hide");}
+
     }  
 
-    document.getElementById("search-submit").setAttribute("value","Reset")
-   
+        checkResults();
 }
 
 /*Function to reset page after search*/
@@ -113,6 +123,35 @@ function resetPage () {
     document.getElementById("search-input").value = "";
 }
 
+/*Function to check if any results displayed, and if not display user message*/
+
+function checkResults () {
+
+    const userArray = Array.from(users);
+    let count = 0;
+    
+    for (let i = 0; i < userArray.length; i++)
+
+    {
+        if (userArray[i].classList.contains("hide")) 
+        {count += 1;}
+    }
+
+    if (count === 12) {noResults();}
+
+    if (count !== 12) {clearMessage();}
+
+    if (count === 0) {document.getElementById("search-submit").setAttribute("value","🔍")}
+    
+}
+
+function noResults () {
+    userMessage.style.display = "";
+}
+
+function clearMessage () {
+    userMessage.style.display = "none";
+}
 
 /*GENERATE DYNAMIC HTML*/
 
@@ -134,6 +173,14 @@ const gallery = document.createElement("div");
 gallery.classList.add("gallery")
 gallery.setAttribute("id", "gallery");
 mainHeader[0].parentNode.insertBefore(gallery, jsScript[0]);
+
+/*HTML No Results Message*/
+
+const userMessage = document.createElement("div");
+
+userMessage.innerHTML = "<h2>No users match that name!</h2>";
+userMessage.style.display = "none";
+mainHeader[0].parentNode.insertBefore(userMessage, gallery);
 
 /*HTML Modal Pop Up Div*/
 
@@ -178,7 +225,7 @@ prevButton();
 
 /*EVENT LISTENERS*/
 
-/*Search bar event listener*/
+/*Search bar button event listener*/
 
 const searchButton = document.getElementById("search-submit");
 
@@ -188,10 +235,29 @@ searchButton.addEventListener("click", event => {
     let icon = document.getElementById("search-submit").getAttribute("value"); 
 
     if (icon != "Reset")
-    {cardSearch(searchInput);}
+    {cardSearch(searchInput);
+    document.getElementById("search-submit").setAttribute("value","Reset");
+    }
 
     else 
     {resetPage();}
+
+});
+
+/*Search box event listener*/
+
+const searchBox = document.getElementById("search-input");
+
+searchBox.addEventListener("keyup", event => {
+
+    const searchInput = document.getElementById("search-input").value;
+    let charCode = event.keyCode;
+
+    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8)
+    {   
+    cardSearch(searchInput);
+    }
+
 
 });
 
